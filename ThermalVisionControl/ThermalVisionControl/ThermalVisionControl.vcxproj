@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B4D5DB5C-F749-47CF-AA8E-D17B84DB2A41}</ProjectGuid>
+    <Keyword>QtVS_v303</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\local\libusb-1.0.23\include\libusb-1.0;C:\local\opencv-4.5.0_build;C:\local\opencv-4.5.0\include;C:\local\opencv-4.5.0\modules\core\include;C:\local\opencv-4.5.0\modules\flann\include;C:\local\opencv-4.5.0\modules\imgproc\include;C:\local\opencv-4.5.0\modules\ml\include;C:\local\opencv-4.5.0\modules\photo\include;C:\local\opencv-4.5.0\modules\dnn\include;C:\local\opencv-4.5.0\modules\features2d\include;C:\local\opencv-4.5.0\modules\imgcodecs\include;C:\local\opencv-4.5.0\modules\videoio\include;C:\local\opencv-4.5.0\modules\calib3d\include;C:\local\opencv-4.5.0\modules\highgui\include;C:\local\opencv-4.5.0\modules\objdetect\include;C:\local\opencv-4.5.0\modules\stitching\include;C:\local\opencv-4.5.0\modules\ts\include;C:\local\opencv-4.5.0\modules\video\include;C:\local\opencv-4.5.0\modules\gapi\include;C:\Users\nurik\Documents\CapstoneProject\ThermalSeekCamera\libseek-thermal\src;C:\Users\nurik\Documents\CapstoneProject\ThermalSeekCamera\libseek-thermal\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>C:\Users\nurik\Documents\CapstoneProject\ThermalSeekCamera\libseek-thermal-build\src\Debug\seek_static.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_dnn450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_gapi450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_highgui450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_ml450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_objdetect450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_photo450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_stitching450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_video450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_videoio450d.lib;C:\local\libusb-1.0.23\MS64\dll\libusb-1.0.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_imgcodecs450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_calib3d450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_features2d450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_flann450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_imgproc450d.lib;C:\local\opencv-4.5.0_build\lib\Debug\opencv_core450d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\nurik\Documents\CapstoneProject\ThermalSeekCamera\libseek-thermal-build\src\Debug;C:\local\opencv-4.5.0_build\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>C:/Users/nurik/Documents/CapstoneProject/ThermalSeekCamera/libseek-thermal-build/examples/Debug/seek_test.lib</ImportLibrary>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>qt5</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>qt5</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="WebCamera.cpp" />
+    <QtRcc Include="ThermalVisionControl.qrc" />
+    <QtUic Include="ThermalVisionControl.ui" />
+    <QtMoc Include="ThermalVisionControl.h" />
+    <ClCompile Include="ThermalCamera.cpp" />
+    <ClCompile Include="ThermalVisionControl.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="WebCamera.h" />
+    <ClInclude Include="ThermalCamera.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
