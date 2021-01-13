@@ -4,13 +4,13 @@
 #include <limits.h>
 #include <iostream>
 #include <direct.h>
-#include <qtimer.h>
+#include <QtCore/qtimer.h>
 #include <windows.h>
 #include <filesystem>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <QtWidgets/QMainWindow>
-#include <QMutex>
+#include <QtCore/qmutex.h>
 #include "WebCamera.h"
 #include "ThermalCamera.h"
 #include "ui_ThermalVisionControl.h"

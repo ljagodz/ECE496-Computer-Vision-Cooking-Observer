@@ -30,9 +30,6 @@
     <QtUic Include="ThermalVisionControl.ui">
       <Filter>Resource Files</Filter>
     </QtUic>
-    <QtMoc Include="ThermalVisionControl.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <ClCompile Include="ThermalVisionControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -55,5 +52,10 @@
     <ClInclude Include="WebCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="ThermalVisionControl.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>
