@@ -2,6 +2,7 @@
 
 #include <string>
 #include <limits.h>
+#include <fstream>
 #include <iostream>
 #include <direct.h>
 #include <QtCore/qtimer.h>
@@ -64,6 +65,7 @@ public:
 
     void ResizeImages();
     void SaveImages();
+    void SaveCSV(std::string csvPath, cv::Mat csvMat);
 
     void UpdateFilePaths();
     void UpdateFileSuffixes();

@@ -303,7 +303,7 @@ void ThermalVisionControl::UpdateFileSuffixes()
 void ThermalVisionControl::UpdateFilePaths()
 {
     fileSeekImg = fileOutputDir + "\\" + suffixSeekImg + "_" + std::to_string(count) + ".bmp";
-    fileSeekTemp = fileOutputDir + "\\" + suffixSeekTemp + "_" + std::to_string(count) + ".csv";
+    fileSeekTemp = fileOutputDir + "\\" + suffixSeekTemp + "_" + std::to_string(count) + ".xml";
     fileWebCamImg = fileOutputDir + "\\" + suffixWebCamImg + "_" + std::to_string(count) + ".bmp";
 }
 
@@ -321,6 +321,14 @@ void ThermalVisionControl::SaveImages()
 {
     cv::imwrite(fileSeekImg, SeekSaveImage);
     cv::imwrite(fileWebCamImg, WebCamSaveImage);
+    SaveCSV(fileSeekTemp, SeekTemperature);
+}
+
+void ThermalVisionControl::SaveCSV(std::string csvPath, cv::Mat csvMat)
+{
+    std::ofstream csvFile(csvPath.c_str());
+    csvFile << cv::format(csvMat, cv::Formatter::FMT_CSV) << std::endl;
+    csvFile.close();
 }
 
 void ThermalVisionControl::PrepareSeekDisplayImage()
