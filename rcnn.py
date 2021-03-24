@@ -7,6 +7,12 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, models, transforms
 
+# TODO:
+# - may require a custom Dataset class implementation for our data.
+# -- or use ImageFolder from datasets module of torchvision.
+# - Combine vgg16 with RNN to be able to feed image sequences.
+# -- need to read some papers.
+
 #class pancakeDataset(Dataset):
 
 
@@ -27,7 +33,7 @@ def dataSetup():
 
 
 # Build CNN (Currently making use of VGG16 architecture).
-def cnnBuild(num_classes):
+def rcnnBuild(num_classes):
 
     # Define VGG16 model.
     vgg16 = models.vgg16(pretrained=True)
@@ -47,19 +53,30 @@ def cnnBuild(num_classes):
     if use_gpu:
         vgg16.cuda()
 
+    # Define RNN classifier.
+    rnn = nn.RNN(input_size=(512 * 7 * 7), hidden_size=4096, num_layers=2, nonlinearity='relu')
+
+    # May need to connect nn.Linear layer at the output of rnn_classifier.
+
     # Define loss and optimizer.
     loss = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(vgg16.parameters(), lr=1e-3)
 
-    return vgg16, loss, optimizer
+    return vgg16, rnn, loss, optimizer
 
 
 if __name__ == "__main__":
     classes = [
-        'empty',
-        'raw'
+        'No Pancake',
+        'Raw',
+        'Ready to Flip',
+        'Bottom Up',
+        'Ready to Remove',
+        'Burnt'
     ]
 
-    vgg16_model = cnnBuild(len(classes))
+    classes_dict = {key: item for key, item in enumerate(classes)}
+
+    vgg16_model = rcnnBuild(len(classes))
 
     # Insert everything else here.
