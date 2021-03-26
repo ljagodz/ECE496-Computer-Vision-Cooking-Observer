@@ -47,7 +47,7 @@ class ImageSequenceFolder(Dataset):
             img_Image = self.transform(img_Image)
             rgb_Image = self.transform(rgb_Image)
 
-        return rgb_Image, img_Image, self.rgb_img_seq[idx].split('_')[-1][:-4]
+        return rgb_Image, img_Image, int(self.rgb_img_seq[idx].split('_')[-1][:-4])
 
 
 
