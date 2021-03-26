@@ -51,12 +51,10 @@ class ImageSequenceFolder(Dataset):
 
 # https://github.com/ashwinhprasad/PyTorch-For-DeepLearning/blob/master/RNN/RNNs.ipynb
 class FeatureSequenceFolder(Dataset):
-    def __init__(self, data_dir, batch_size, sampler, loader, seq_len):
+    def __init__(self, data_dir, seq_len, loader=torch.load):
         self.data_dir = data_dir
-        self.batch_size = batch_size
-        self.sampler = sampler
-        self.loader = loader
         self.seq_len = seq_len
+        self.loader = loader
 
         # Initialize sequences from feature tensors list.
         feature_dir_list = os.listdir(self.data_dir)
@@ -77,7 +75,15 @@ class FeatureSequenceFolder(Dataset):
         return self.length
 
     def __getitem__(self, idx):
-        pass
+        feature_file_sequence = self.feature_seq_list[idx]
+        feature_label = self.feature_label_list[idx]
+        feature_sequence = []
+        for i in range(self.seq_len):
+            feature_path = os.path.join(self.data_dir, feature_file_sequence[i])
+            feature_tensor = self.loader(feature_path)
+            feature_sequence.append(feature_tensor)
+
+        return feature_sequence, feature_label
 
 # def main():
 #     #PROJECT_FOLDER = './data/'
