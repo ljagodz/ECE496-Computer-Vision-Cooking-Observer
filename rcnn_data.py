@@ -46,14 +46,43 @@ class ImageSequenceFolder(Dataset):
             img_Image = self.transform(img_Image)
             rgb_Image = self.transform(rgb_Image)
 
-        return rgb_Image, img_Image, int(self.rgb_img_seq[idx].split('_')[-1][:-4])
+        return rgb_Image, img_Image, int(self.rgb_img_seq[idx].split('_')[-1][:-4]), str(self.rgb_img_seq[idx][:-4])
 
 
+# https://github.com/ashwinhprasad/PyTorch-For-DeepLearning/blob/master/RNN/RNNs.ipynb
+class FeatureSequenceFolder(Dataset):
+    def __init__(self, data_dir, batch_size, sampler, loader, seq_len):
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.sampler = sampler
+        self.loader = loader
+        self.seq_len = seq_len
 
-def main():
-    #PROJECT_FOLDER = './data/'
-    #FEATURE_FOLDER = PROJECT_FOLDER + 'features'
-    seq0 = ImageSequenceFolder('./data/dataset_by_run/dataset_by_run/0/')
+        # Initialize sequences from feature tensors list.
+        feature_dir_list = os.listdir(self.data_dir)
+        temp_feature_list = [[file.split('_'), file] for file in feature_dir_list]
+        feature_dict = {int(file[0][0]): file[-1] for file in temp_feature_list}
+        self.feature_seq_list = []
+        self.feature_label_list = []
+        for i in range(len(feature_dir_list) - self.seq_len):
+            temp_list = []
+            for j in range(i, i + self.seq_len):
+                temp_list.append(feature_dict[j])
+            self.feature_seq_list.append(temp_list)
+            self.feature_label_list.append(int(temp_list[-1].split('_')[-1][:-7]))
 
-if __name__ == "__main__":
-    main()
+        self.length = len(self.feature_label_list)
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, idx):
+        pass
+
+# def main():
+#     #PROJECT_FOLDER = './data/'
+#     #FEATURE_FOLDER = PROJECT_FOLDER + 'features'
+#     seq0 = ImageSequenceFolder('./data/dataset_by_run/dataset_by_run/0/')
+#
+# if __name__ == "__main__":
+#     main()
