@@ -30,7 +30,7 @@ def main():
     for i in range(9):
         file_number = 0  # all features assigned an arbitrary number for naming purposes.
         data_loader = DataLoader(dataset_list[i], batch_size=1, shuffle=False)
-        for j, (rgb_image, img_image, label) in enumerate(data_loader):
+        for j, (rgb_image, img_image, label, name_img) in enumerate(data_loader):
             rgb_feature = vgg.features(rgb_image)
             img_feature = vgg.features(img_image)
 
@@ -45,7 +45,7 @@ def main():
             if not os.path.exists(path_string):
                 os.mkdir(path_string)
 
-            file_name = os.path.join(path_string, str(j) + '.tensor')
+            file_name = os.path.join(path_string, name_img[0] + '.tensor')
             torch.save(rgb_img_combined_tensor.squeeze(0), file_name)
 
 
