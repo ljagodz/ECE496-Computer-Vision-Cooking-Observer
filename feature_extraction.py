@@ -8,7 +8,7 @@ import rcnn_data
 def main():
 
     DATA_PATH = './data/dataset_by_run/dataset_by_run/'
-    FEATURE_PATH = DATA_PATH + 'features'
+    FEATURE_PATH = DATA_PATH + 'features/'
 
     # construct vgg model.
     vgg = models.vgg16(pretrained=True)
@@ -34,10 +34,19 @@ def main():
             rgb_feature = vgg.features(rgb_image)
             img_feature = vgg.features(img_image)
 
+
             rgb_feature_tensor = torch.from_numpy(rgb_feature.detach().numpy())
             img_feature_tensor = torch.from_numpy(img_feature.detach().numpy())
 
             rgb_img_combined_tensor = torch.cat((rgb_feature_tensor, img_feature_tensor), dim=1)
+
+            path_string = str(i) + '/'
+            path_string = os.path.join(FEATURE_PATH, path_string)
+            if not os.path.exists(path_string):
+                os.mkdir(path_string)
+
+            file_name = os.path.join(path_string, str(j) + '.tensor')
+            torch.save(rgb_img_combined_tensor.squeeze(0), file_name)
 
 
 if __name__ == "__main__":
