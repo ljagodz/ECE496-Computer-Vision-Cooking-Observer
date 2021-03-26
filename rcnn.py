@@ -35,18 +35,27 @@ class lstmModel(nn.Module):
         return x
 
 
-# Function to initialize CUDA stuff, provided using a machine with Nvidia GPU.
-# This may not be needed, not sure.
-def cudaSetup():
-    cuda = torch.cuda('cuda');
-    return cuda
-
-
 def main():
-    use_gpu = torch.cuda.is_available()
-    if use_gpu:
-        print("Using CUDA device.")
+    # use_gpu = torch.cuda.is_available()
+    # if use_gpu:
+    #     print("Using CUDA device.")
 
+    # Initialize for training.
+    classes = [
+        'No Pancake',
+        'Raw',
+        'Ready to Flip',
+        'Bottom Up',
+        'Ready to Remove',
+        'Burnt',
+        'Obstruction'
+    ]
+
+    num_classes = len(classes)
+
+    classes_dict = {key: item for key, item in enumerate(classes)}
+
+    lstm_model = lstmModel(1024 * 7 * 7, 2048, num_classes)
 
 
 if __name__ == "__main__":
@@ -63,5 +72,3 @@ if __name__ == "__main__":
     classes_dict = {key: item for key, item in enumerate(classes)}
 
     main()
-
-    # Insert everything else here.
