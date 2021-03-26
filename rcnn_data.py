@@ -6,6 +6,7 @@ import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, models, transforms
 from torchvision.io import read_image
+from torchvision.datasets.folder import default_loader
 from PIL import Image
 
 
@@ -39,11 +40,9 @@ class ImageSequenceFolder(Dataset):
     def __getitem__(self, idx):
         img_path = os.path.join(self.img_dir, self.rgb_img_seq[idx])
         rgb_path = os.path.join(self.rgb_dir, self.rgb_img_seq[idx])
-        img_Image = Image.open(img_path)
-        rgb_Image = Image.open(rgb_path)
-        img_Image = img_Image.convert('RGB')
-        rgb_Image = rgb_Image.convert('RGB')
-        if self.transform is not None:
+        img_Image = default_loader(img_path)
+        rgb_Image = default_loader(rgb_path)
+        if self.transform:
             img_Image = self.transform(img_Image)
             rgb_Image = self.transform(rgb_Image)
 
