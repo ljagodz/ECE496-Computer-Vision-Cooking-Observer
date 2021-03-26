@@ -6,6 +6,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, models, transforms
+import rcnn_data
 
 # TODO:
 # - may require a custom Dataset class implementation for our data.
@@ -13,7 +14,25 @@ from torchvision import datasets, models, transforms
 # - Combine vgg16 with RNN to be able to feed image sequences.
 # -- need to read some papers.
 
-#class pancakeDataset(Dataset):
+
+class lstmModel(nn.Module):
+    def __init__(self, input_size, hidden_size, num_classes):
+        super(lstmModel, self).__init__()
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.num_classes = num_classes
+        self.avgpool = nn.AdaptiveAvgPool2d((7, 7))
+
+        self.lstm = nn.LSTM(input_size, hidden_size)
+
+        self.class_output = nn.Linear(hidden_size, num_classes)
+
+    def forward(self, input):
+        x = self.avgpool(input)
+        x = torch.flatten(x, 1)
+        x = self.lstm(x)
+        x = self.output(x)
+        return x
 
 
 use_gpu = torch.cuda.is_available()
@@ -28,41 +47,9 @@ def cudaSetup():
     return cuda
 
 
-def dataSetup():
+def main():
     pass
 
-
-# Build CNN (Currently making use of VGG16 architecture).
-def rcnnBuild(num_classes):
-
-    # Define VGG16 model.
-    vgg16 = models.vgg16(pretrained=True)
-
-    # Modify to output num_classes instead of 1000.
-    # https://www.kaggle.com/carloalbertobarbano/vgg16-transfer-learning-pytorch
-    # START
-    for param in vgg16.features.parameters():
-        param.require_grad = False
-    num_features = vgg16.classifier[6].in_features
-    features = list(vgg16.classifier.children())[:-1]
-    features.extend([nn.Linear(num_features, num_classes)])
-    vgg16.classifier = nn.Sequential(*features)
-    # END
-
-    # Move model to GPU.
-    if use_gpu:
-        vgg16.cuda()
-
-    # Define RNN classifier.
-    rnn = nn.RNN(input_size=(512 * 7 * 7), hidden_size=4096, num_layers=2, nonlinearity='relu')
-
-    # May need to connect nn.Linear layer at the output of rnn_classifier.
-
-    # Define loss and optimizer.
-    loss = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(vgg16.parameters(), lr=1e-3)
-
-    return vgg16, rnn, loss, optimizer
 
 
 if __name__ == "__main__":
@@ -76,7 +63,5 @@ if __name__ == "__main__":
     ]
 
     classes_dict = {key: item for key, item in enumerate(classes)}
-
-    vgg16_model = rcnnBuild(len(classes))
 
     # Insert everything else here.
