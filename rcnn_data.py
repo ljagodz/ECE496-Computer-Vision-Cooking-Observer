@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, models, transforms
 from torchvision.io import read_image
 from torchvision.datasets.folder import default_loader
-from PIL import Image
+import numpy as np
 
 
 class ImageSequenceFolder(Dataset):
@@ -83,9 +83,11 @@ class FeatureSequenceFolder(Dataset):
             avgpool = nn.AdaptiveAvgPool2d((7, 7))
             feature_tensor = avgpool(feature_tensor)
             feature_tensor = torch.flatten(feature_tensor)
-            feature_sequence.append(feature_tensor)
+            feature_sequence.append(feature_tensor.detach().numpy())
 
-        return feature_sequence, feature_label
+        feature_array = np.array(feature_sequence)
+
+        return feature_array, feature_label
 
 # def main():
 #     #PROJECT_FOLDER = './data/'
