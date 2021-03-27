@@ -32,6 +32,7 @@ class lstmModel(nn.Module):
         #out = self.avgpool(x)
         #out = torch.flatten(out, 2)
         out, (h_n, c_n) = self.lstm(x)
+        out = out[:,-1,:]
         out = self.class_output(torch.relu(out))
         return out
 
@@ -120,7 +121,7 @@ def main():
     feature_path = './data/dataset_by_run/dataset_by_run/features_by_run/0/'
     train_loader, val_loader, test_loader = get_data_loader(1, 3, feature_path)
     data, target = next(iter(train_loader))
-    print(lstm_model(data).shape)
+    print(lstm_model(data))
 
 
 if __name__ == "__main__":
