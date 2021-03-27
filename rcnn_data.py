@@ -49,7 +49,6 @@ class ImageSequenceFolder(Dataset):
         return rgb_Image, img_Image, int(self.rgb_img_seq[idx].split('_')[-1][:-4]), str(self.rgb_img_seq[idx][:-4])
 
 
-# https://github.com/ashwinhprasad/PyTorch-For-DeepLearning/blob/master/RNN/RNNs.ipynb
 class FeatureSequenceFolder(Dataset):
     def __init__(self, data_dir, seq_len, loader=torch.load):
         self.data_dir = data_dir
@@ -81,6 +80,9 @@ class FeatureSequenceFolder(Dataset):
         for i in range(self.seq_len):
             feature_path = os.path.join(self.data_dir, feature_file_sequence[i])
             feature_tensor = self.loader(feature_path)
+            avgpool = nn.AdaptiveAvgPool2d((7, 7))
+            feature_tensor = avgpool(feature_tensor)
+            feature_tensor = torch.flatten(feature_tensor)
             feature_sequence.append(feature_tensor)
 
         return feature_sequence, feature_label
