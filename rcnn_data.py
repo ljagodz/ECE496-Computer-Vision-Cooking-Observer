@@ -56,17 +56,27 @@ class FeatureSequenceFolder(Dataset):
         self.loader = loader
 
         # Initialize sequences from feature tensors list.
-        feature_dir_list = os.listdir(self.data_dir)
-        temp_feature_list = [[file.split('_'), file] for file in feature_dir_list]
-        feature_dict = {int(file[0][0]): file[-1] for file in temp_feature_list}
+        run_dir_list = os.listdir(self.data_dir) # BEGIN INCORPORATING ALL RUNS HERE
+        temp_run_dict = {int(folder): folder for folder in run_dir_list}
         self.feature_seq_list = []
         self.feature_label_list = []
-        for i in range(len(feature_dir_list) - self.seq_len):
-            temp_list = []
-            for j in range(i, i + self.seq_len):
-                temp_list.append(feature_dict[j])
-            self.feature_seq_list.append(temp_list)
-            self.feature_label_list.append(int(temp_list[-1].split('_')[-1][:-7]))
+        self.run_length = []
+        for folder in range(len(temp_run_dict)):
+            directory = os.path.join(self.data_dir, temp_run_dict[folder])
+            print(directory)
+            feature_dir_list = os.listdir(directory)
+            temp_feature_list = [[file.split('_'), file] for file in feature_dir_list]
+            feature_dict = {int(file[0][0]): file[-1] for file in temp_feature_list}
+            # self.feature_seq_list = []
+            # self.feature_label_list = []
+            for i in range(len(feature_dir_list) - self.seq_len):
+                temp_list = []
+                for j in range(i, i + self.seq_len):
+                    temp_list.append(os.path.join(temp_run_dict[folder], feature_dict[j]))
+                self.feature_seq_list.append(temp_list)
+                self.feature_label_list.append(int(temp_list[-1].split('_')[-1][:-7]))
+
+            self.run_length.append(len(self.feature_label_list))
 
         self.length = len(self.feature_label_list)
 
@@ -79,6 +89,7 @@ class FeatureSequenceFolder(Dataset):
         feature_sequence = []
         for i in range(self.seq_len):
             feature_path = os.path.join(self.data_dir, feature_file_sequence[i])
+            #print(feature_path)
             feature_tensor = self.loader(feature_path)
             avgpool = nn.AdaptiveAvgPool2d((7, 7))
             feature_tensor = avgpool(feature_tensor)

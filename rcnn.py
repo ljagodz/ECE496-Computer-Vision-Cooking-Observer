@@ -119,18 +119,17 @@ def main():
 
     # Hyperparamete declarations.
     batch_size = 1
-    num_epochs = 15
-    lr = 0.01
+    num_epochs = 20
+    lr = 0.001
     momentum = 0.9
 
     # LSTM model.
     lstm_model = lstmModel(1024 * 7 * 7, 2048, num_classes)
 
-    feature_path = './data/dataset_by_run/dataset_by_run/features_by_run/0/'
-    train_loader, val_loader, test_loader = get_data_loader(1, 3, feature_path)
+    feature_path = './data/dataset_by_run/dataset_by_run/features_by_run/'
+    train_loader, val_loader, test_loader = get_data_loader(128, 8, feature_path)
     #data, target = next(iter(train_loader))
     #print(lstm_model(data))
-
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(lstm_model.parameters(), lr, momentum)
@@ -156,8 +155,11 @@ def main():
             print('Iteration %d Complete' % i)
             i += 1
 
-        train_acc[epoch], train_loss[epoch] = evaluate(lstm_model, train_loader, criterion)
-        val_acc[epoch], val_loss[epoch] = evaluate(lstm_model, val_loader, criterion)
+        train_acc[epoch], train_loss[epoch] = evaluate(lstm_model, train_loader, criterion, use_cuda)
+        val_acc[epoch], val_loss[epoch] = evaluate(lstm_model, val_loader, criterion, use_cuda)
+
+        print(("Epoch: {}, Train Acc: {}, Train Loss: {}, Val Acc: {}, Val Loss: {}").format(
+            epoch + 1, train_acc[epoch], train_loss[epoch], val_acc[epoch], val_loss[epoch]))
 
     epochs = np.arange(1, num_epochs + 1)
     plt.title("Training Curve")
