@@ -8,6 +8,8 @@ from torch.utils.data import DataLoader, Dataset, SubsetRandomSampler
 from torchvision import datasets, models, transforms
 import rcnn_data
 import numpy as np
+import torch.optim as optim
+import matplotlib.pyplot as plt
 
 # TODO:
 # - may require a custom Dataset class implementation for our data.
@@ -101,7 +103,7 @@ def main():
 
     # Initialize for training.
 
-    use_cuda = torch.cuda.is_available()
+    use_cuda = False #torch.cuda.is_available()
 
     classes = [
         'No Pancake',
@@ -115,13 +117,64 @@ def main():
     num_classes = len(classes)
     classes_dict = {key: item for key, item in enumerate(classes)}
 
+    # Hyperparamete declarations.
+    batch_size = 1
+    num_epochs = 15
+    lr = 0.01
+    momentum = 0.9
+
     # LSTM model.
     lstm_model = lstmModel(1024 * 7 * 7, 2048, num_classes)
 
     feature_path = './data/dataset_by_run/dataset_by_run/features_by_run/0/'
     train_loader, val_loader, test_loader = get_data_loader(1, 3, feature_path)
-    data, target = next(iter(train_loader))
-    print(lstm_model(data))
+    #data, target = next(iter(train_loader))
+    #print(lstm_model(data))
+
+
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.SGD(lstm_model.parameters(), lr, momentum)
+
+    train_acc = np.zeros(num_epochs)
+    train_loss = np.zeros(num_epochs)
+    val_acc = np.zeros(num_epochs)
+    val_loss = np.zeros(num_epochs)
+
+    for epoch in range(num_epochs):
+        i = 0
+        for inputs, labels in iter(train_loader):
+            if use_cuda:
+                inputs = inputs.cuda()
+                labels = labels.cuda()
+
+            outputs = lstm_model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+
+            print('Iteration %d Complete' % i)
+            i += 1
+
+        train_acc[epoch], train_loss[epoch] = evaluate(lstm_model, train_loader, criterion)
+        val_acc[epoch], val_loss[epoch] = evaluate(lstm_model, val_loader, criterion)
+
+    epochs = np.arange(1, num_epochs + 1)
+    plt.title("Training Curve")
+    plt.plot(epochs, train_loss, label="Train")
+    plt.plot(epochs, val_loss, label="Validation")
+    plt.xlabel("Epoch")
+    plt.ylabel("Training Loss")
+    plt.legend(loc='best')
+    plt.show()
+
+    plt.title("Training Curve")
+    plt.plot(epochs, train_acc, label="Train")
+    plt.plot(epochs, val_acc, label="Validation")
+    plt.xlabel("Epoch")
+    plt.ylabel("Training Accuracy")
+    plt.legend(loc='best')
+    plt.show()
 
 
 if __name__ == "__main__":
