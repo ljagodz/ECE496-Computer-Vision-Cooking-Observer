@@ -96,6 +96,46 @@ def evaluate(net, loader, criterion, use_cuda):
     return acc, loss
 
 
+def evaluate_testset(net, loader):
+    total_acc = 0.0
+    total_epoch = 0
+    i = 0
+
+    use_cuda = False
+
+    for inputs, labels in iter(loader):
+        if use_cuda and torch.cuda.is_available():
+            inputs = inputs.cuda()
+            labels = labels.cuda()
+
+        outputs = net(inputs)
+
+        pred = outputs.max(1, keepdim=True)[1]
+        total_acc += pred.eq(labels.view_as(pred)).sum().item()
+        total_epoch += len(labels)
+        i += 1
+
+        print("Test Accuracy at Iteration {}: {}".format(i, total_acc / total_epoch))
+
+    acc = float(total_acc) / total_epoch
+    print("Final Test Accuracy: {}".format(acc))
+    return acc
+
+
+    PROJECT_FOLDER = '/content/drive/My Drive/ML/model/rbg_img_models/Full Dataset/'
+    MODEL_FILENAME = 'vgg_classifier_rgb_img_full_dataset_bs=128_e=50_lr=0.001_m=0.9.pt'
+    MODEL_PATH = PROJECT_FOLDER + MODEL_FILENAME
+    _, _, test_loader = get_data_loader(batch_size=128)
+    model = VGGClassifier()
+    if use_cuda and torch.cuda.is_available():
+        model.cuda()
+        model.load_state_dict(torch.load(MODEL_PATH, torch.device('cuda')))
+        print('CUDA is available, using GPU ...')
+    else:
+        model.load_state_dict(torch.load(MODEL_PATH, torch.device('cpu')))
+        print('CUDA is not available, using CPU ...')
+
+
 def main():
     # use_gpu = torch.cuda.is_available()
     # if use_gpu:
@@ -125,9 +165,12 @@ def main():
 
     # LSTM model.
     lstm_model = lstmModel(1024 * 7 * 7, 2048, num_classes)
+    if use_cuda:
+        lstm_model.cuda()
 
-    feature_path = './data/dataset_by_run/dataset_by_run/features_by_run/'
-    train_loader, val_loader, test_loader = get_data_loader(128, 8, feature_path)
+    #feature_path = './data/dataset_by_run/dataset_by_run/features_by_run/'
+    feature_path = './data/dataset_runfeatures/'
+    train_loader, val_loader, test_loader = get_data_loader(256, 8, feature_path)
     #data, target = next(iter(train_loader))
     #print(lstm_model(data))
 
@@ -161,6 +204,10 @@ def main():
         print(("Epoch: {}, Train Acc: {}, Train Loss: {}, Val Acc: {}, Val Loss: {}").format(
             epoch + 1, train_acc[epoch], train_loss[epoch], val_acc[epoch], val_loss[epoch]))
 
+    model_save_name = 'vgg_classifier_rgb_img_full_dataset_bs=256_e=50_lr=0.001_m=0.9.pt'
+    fileName = F"./{model_save_name}"
+    torch.save(lstm_model.state_dict(), fileName)
+
     epochs = np.arange(1, num_epochs + 1)
     plt.title("Training Curve")
     plt.plot(epochs, train_loss, label="Train")
@@ -180,4 +227,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    #main()
+    lstm_model = lstmModel(1024 * 7 * 7, 2048, 7)
+    feature_path = './data/dataset_runfeatures/'
+    train_loader, val_loader, test_loader = get_data_loader(256, 8, feature_path)
+    model_path = './vgg_classifier_rgb_img_full_dataset_bs=256_e=50_lr=0.001_m=0.9.pt'
+    lstm_model.load_state_dict(torch.load(model_path, torch.device('cpu')))
+    acc = evaluate_testset(lstm_model, test_loader)
