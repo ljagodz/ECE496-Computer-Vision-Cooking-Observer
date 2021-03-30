@@ -10,6 +10,7 @@ import rcnn_data
 import numpy as np
 import torch.optim as optim
 import matplotlib.pyplot as plt
+import time
 
 # TODO:
 # - may require a custom Dataset class implementation for our data.
@@ -136,6 +137,67 @@ def evaluate_testset(net, loader):
         print('CUDA is not available, using CPU ...')
 
 
+def time_forward_pass():
+    DATA_PATH = './data/dataset_run/'
+    FEATURE_PATH = DATA_PATH + 'feature/'
+
+    # construct vgg model.
+    vgg = models.vgg16(pretrained=True)
+    lstm_model = lstmModel(1024 * 7 * 7, 2048, 7)
+    model_path = './vgg_classifier_rgb_img_full_dataset_bs=1024_e=50_lr=0.001_m=0.9.pt'
+    lstm_model.load_state_dict(torch.load(model_path, torch.device('cpu')))
+
+    # transform to apply to every image.
+    data_transform = transforms.Compose(
+        [transforms.CenterCrop(154), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+    # initialize datasets, put into list as they are all distinct sequences.
+    dataset_list = []
+    for i in range(45):
+        path_string = str(i) + '/'
+        dataset_list.append(
+            rcnn_data.ImageSequenceFolder(os.path.join(DATA_PATH, path_string), transform=data_transform))
+
+    # may need to add mappings here?
+
+    # if not os.path.exists(FEATURE_PATH):
+    #     os.mkdir(FEATURE_PATH)
+
+    sequence = 0  # all features assigned an arbitrary number for naming purposes.
+    feature_list = []
+    #label_list = []
+    start_time = time.time()
+    data_loader = DataLoader(dataset_list[i], batch_size=1, shuffle=False)
+    for j, (rgb_image, img_image, label, name_img) in enumerate(data_loader):
+        rgb_feature = vgg.features(rgb_image)
+        img_feature = vgg.features(img_image)
+
+        rgb_feature_tensor = torch.from_numpy(rgb_feature.detach().numpy())
+        img_feature_tensor = torch.from_numpy(img_feature.detach().numpy())
+
+        rgb_img_combined_tensor = torch.cat((rgb_feature_tensor, img_feature_tensor), dim=1)
+
+        feature_list.append(rgb_img_combined_tensor)
+
+        sequence += 1
+
+        if sequence is 8:
+            break
+
+    feature_sequence = []
+    avgpool = nn.AdaptiveAvgPool2d((7, 7))
+    for i in range(8):
+        feature_tensor = avgpool(feature_list[i])
+        feature_tensor = torch.flatten(feature_tensor)
+        feature_sequence.append(feature_tensor.detach().numpy())
+
+    feature_input_tensor = torch.Tensor(np.array(feature_sequence, ndmin=3))
+    print(feature_input_tensor.shape)
+
+    outputs = lstm_model(feature_input_tensor)
+    print(time.time() - start_time)
+
+
 def main():
     # use_gpu = torch.cuda.is_available()
     # if use_gpu:
@@ -228,9 +290,10 @@ def main():
 
 if __name__ == "__main__":
     #main()
-    lstm_model = lstmModel(1024 * 7 * 7, 2048, 7)
-    feature_path = './data/dataset_runfeatures/'
-    train_loader, val_loader, test_loader = get_data_loader(256, 8, feature_path)
-    model_path = './vgg_classifier_rgb_img_full_dataset_bs=256_e=50_lr=0.001_m=0.9.pt'
-    lstm_model.load_state_dict(torch.load(model_path, torch.device('cpu')))
-    acc = evaluate_testset(lstm_model, test_loader)
+    # lstm_model = lstmModel(1024 * 7 * 7, 2048, 7)
+    # feature_path = './data/dataset_runfeatures/'
+    # train_loader, val_loader, test_loader = get_data_loader(256, 8, feature_path)
+    # model_path = './vgg_classifier_rgb_img_full_dataset_bs=256_e=50_lr=0.001_m=0.9.pt'
+    # lstm_model.load_state_dict(torch.load(model_path, torch.device('cpu')))
+    # acc = evaluate_testset(lstm_model, test_loader)
+    time_forward_pass()
