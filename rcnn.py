@@ -123,20 +123,6 @@ def evaluate_testset(net, loader):
     return acc
 
 
-    PROJECT_FOLDER = '/content/drive/My Drive/ML/model/rbg_img_models/Full Dataset/'
-    MODEL_FILENAME = 'vgg_classifier_rgb_img_full_dataset_bs=128_e=50_lr=0.001_m=0.9.pt'
-    MODEL_PATH = PROJECT_FOLDER + MODEL_FILENAME
-    _, _, test_loader = get_data_loader(batch_size=128)
-    model = VGGClassifier()
-    if use_cuda and torch.cuda.is_available():
-        model.cuda()
-        model.load_state_dict(torch.load(MODEL_PATH, torch.device('cuda')))
-        print('CUDA is available, using GPU ...')
-    else:
-        model.load_state_dict(torch.load(MODEL_PATH, torch.device('cpu')))
-        print('CUDA is not available, using CPU ...')
-
-
 def time_forward_pass():
     DATA_PATH = './data/dataset_run/'
     FEATURE_PATH = DATA_PATH + 'feature/'
@@ -166,11 +152,14 @@ def time_forward_pass():
     sequence = 0  # all features assigned an arbitrary number for naming purposes.
     feature_list = []
     #label_list = []
-    start_time = time.time()
     data_loader = DataLoader(dataset_list[i], batch_size=1, shuffle=False)
+    start_time = time.time()
     for j, (rgb_image, img_image, label, name_img) in enumerate(data_loader):
+
+        #start_time = time.time()
         rgb_feature = vgg.features(rgb_image)
         img_feature = vgg.features(img_image)
+        #print(time.time() - start_time)
 
         rgb_feature_tensor = torch.from_numpy(rgb_feature.detach().numpy())
         img_feature_tensor = torch.from_numpy(img_feature.detach().numpy())
@@ -290,10 +279,10 @@ def main():
 
 if __name__ == "__main__":
     #main()
-    # lstm_model = lstmModel(1024 * 7 * 7, 2048, 7)
-    # feature_path = './data/dataset_runfeatures/'
-    # train_loader, val_loader, test_loader = get_data_loader(256, 8, feature_path)
-    # model_path = './vgg_classifier_rgb_img_full_dataset_bs=256_e=50_lr=0.001_m=0.9.pt'
-    # lstm_model.load_state_dict(torch.load(model_path, torch.device('cpu')))
-    # acc = evaluate_testset(lstm_model, test_loader)
-    time_forward_pass()
+    lstm_model = lstmModel(1024 * 7 * 7, 2048, 7)
+    feature_path = './data/dataset_runfeatures/'
+    train_loader, val_loader, test_loader = get_data_loader(256, 8, feature_path)
+    model_path = './vgg_classifier_rgb_img_full_dataset_bs=256_e=50_lr=0.001_m=0.9.pt'
+    lstm_model.load_state_dict(torch.load(model_path, torch.device('cpu')))
+    acc = evaluate_testset(lstm_model, test_loader)
+    # time_forward_pass()
