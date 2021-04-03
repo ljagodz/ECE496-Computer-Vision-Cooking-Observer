@@ -75,6 +75,11 @@ def main():
         tmp_cropped = Image.fromarray(tmp_cropped.astype(np.uint8)).convert('RGB')
         rgb_cropped = data_transform(rgb_cropped)
         tmp_cropped = data_transform(tmp_cropped)
+
+        # Add 4th dimension
+        rgb_cropped = torch.Tensor(rgb_cropped).unsqueeze(0)
+        tmp_cropped = torch.Tensor(tmp_cropped).unsqueeze(0)
+
         rgb_feature = vgg.features(rgb_cropped)
         tmp_feature = vgg.features(tmp_cropped)
 
