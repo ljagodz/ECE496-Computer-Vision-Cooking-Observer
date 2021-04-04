@@ -45,6 +45,8 @@ def main():
         [transforms.CenterCrop(154), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     avgpool = nn.AdaptiveAvgPool2d((7, 7))
     lstm_model = lstmModel(1024 * 7 * 7, 2048, 7)
+    lstm_model_path = 'state.pt'
+    lstm_model.load_state_dict(torch.load(lstm_model_path, torch.device('cpu')))
 
     # image read
     for i in range(10):
@@ -98,6 +100,8 @@ def main():
         feature_input_tensor = torch.Tensor(np.array(feature_queue, ndmin=3))
         outputs = lstm_model(feature_input_tensor)
         print(outputs)
+        predicted_class = outputs.detach().numpy().argmax()
+        print(predicted_class)
         feature_queue.pop(0)
 
         # Display Image
