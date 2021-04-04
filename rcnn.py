@@ -170,7 +170,7 @@ def time_forward_pass():
 
         sequence += 1
 
-        if sequence is 8:
+        if sequence == 8:
             break
 
     feature_sequence = []
