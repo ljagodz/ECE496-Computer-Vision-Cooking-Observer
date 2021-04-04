@@ -22,14 +22,16 @@ def save_image(path, file_name):
 
 
 def read_tmp():
-    os.system("\"{}\"".format(SEEK_SAVE) + " test.csv")
-    return np.loadtxt(fname=open("test.csv"), dtype=np.uint32, delimiter=",")
+    # os.system("\"{}\"".format(SEEK_SAVE) + " test.csv")
+    # return np.loadtxt(fname=open("test.csv"), dtype=np.uint32, delimiter=",")
+    return np.random.rand(1, 154, 154)
 
 
 def read_rgb(cam):
-    ret, frame = cam.read()
-    assert ret
-    return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    # ret, frame = cam.read()
+    # assert ret
+    # return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    return np.random.rand(3, 154, 154)
 
 
 def main():
@@ -49,8 +51,8 @@ def main():
     lstm_model.load_state_dict(torch.load(lstm_model_path, torch.device('cpu')))
 
     # image read
-    for i in range(10):
-        cam.read()
+    # for i in range(10):
+    #     cam.read()
 
     rgb_img = read_rgb(cam)
     tmp_dat = read_tmp()
