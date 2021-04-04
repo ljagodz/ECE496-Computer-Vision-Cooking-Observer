@@ -62,10 +62,10 @@ def crop_and_resize_image(img, minmax, square_dim, final_dim):
     img_crop = img[minmax['min']['y']: minmax['max']['y'], minmax['min']['x']:minmax['max']['x']]
 
     # Flatten Image
-    img_square = resize(img_crop, square_dim, preserve_range=True)
+    img_square = resize(img_crop, square_dim, preserve_range=True, anti_aliasing=False).astype('uint8')
 
     # Scale Image
-    img_scaled = resize(img_square, final_dim, preserve_range=True)
+    img_scaled = resize(img_square, final_dim, preserve_range=True, anti_aliasing=False).astype('uint8')
 
     # Save Image
     # io.imsave(fname=out_path, arr=img_scaled)
