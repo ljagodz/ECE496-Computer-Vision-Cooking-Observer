@@ -24,14 +24,16 @@ def save_image(path, file_name):
 def read_tmp():
     # os.system("\"{}\"".format(SEEK_SAVE) + " test.csv")
     # return np.loadtxt(fname=open("test.csv"), dtype=np.uint32, delimiter=",")
-    return np.random.rand(1, 154, 154)
+    img = cv2.imread("679iph1pgmm41.jpg")
+    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
 def read_rgb(cam):
     # ret, frame = cam.read()
     # assert ret
     # return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    return np.random.rand(3, 154, 154)
+    img = cv2.imread("winter_schedule.PNG")
+    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
 def main():
@@ -70,15 +72,15 @@ def main():
         # Crop Image
         rgb_cropped = crop_and_resize_image(rgb_img, rgb_minmax, rgb_dim, RES)
         tmp_cropped = crop_and_resize_data(tmp_dat, tmp_minmax)
-        print(rgb_cropped.shape)
-        print(tmp_cropped.shape)
+        # print(rgb_cropped)
+        # print(tmp_cropped)
 
         # Feed Forward
         # Transform images
-        rgb_cropped = Image.fromarray(rgb_cropped.astype(np.uint8))
-        tmp_cropped = Image.fromarray(tmp_cropped.astype(np.uint8)).convert('RGB')
-        rgb_cropped = data_transform(rgb_cropped)
-        tmp_cropped = data_transform(tmp_cropped)
+        rgb_cropped_show = Image.fromarray(rgb_cropped.astype(np.uint8))
+        tmp_cropped_show = Image.fromarray(tmp_cropped.astype(np.uint8)).convert('RGB')
+        rgb_cropped = data_transform(rgb_cropped_show)
+        tmp_cropped = data_transform(tmp_cropped_show)
 
         # Add 4th dimension
         rgb_cropped = torch.Tensor(rgb_cropped).unsqueeze(0)
@@ -110,10 +112,10 @@ def main():
         fig, axs = plt.subplots(1, 2)
 
         axs[0].set_title("RGB Image")
-        axs[0].imshow(rgb_cropped)
+        axs[0].imshow(rgb_cropped_show)
 
         axs[1].set_title("Temperature Image")
-        axs[1].imshow(tmp_cropped)
+        axs[1].imshow(tmp_cropped_show)
         plt.show()
 
 
