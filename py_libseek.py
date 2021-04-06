@@ -51,7 +51,7 @@ def sample_minmax(img_rgb):
             for p in ph:
                 p.remove()
 
-    plt.close(fig)
+    plt.close('all')
 
     return x_max, x_min, y_max, y_min
 
